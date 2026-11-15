@@ -219,96 +219,88 @@ FireScope/
 ```
 
 
+\## 8 How to Run the Project Locally
 
-\## 8. Installation and Execution
+FireScope – Kerala consists of a FastAPI backend and an HTML, CSS, and JavaScript frontend. Both must be running to use the interactive dashboard locally.
 
+\### 1. Prerequisites
 
+Install the following:
 
-\### Step 1: Clone the Repository
+- Python 3.10 or later
+- Git
+- A modern web browser
 
-
-
-```bash
-
-git clone https://github.com/Anusankarys/FireScope-Kerala.git
-
-cd FireScope-Kerala
-
-```
-
-
-
-\### Step 2: Install Dependencies
-
-
+\### 2. Clone the Repository
 
 ```bash
-
-pip install -r requirements.txt
-
+\- git clone https://github.com/Anusankarys/FireScope-Kerala.git
+\- cd FireScope-Kerala
 ```
 
+\### 3. Set Up the Python Environment
 
-
-\### Step 3: Start the Backend
-
-
-
-From the project root directory, run:
-
-
+Create a virtual environment:
 
 ```bash
-
-uvicorn backend.app:app --reload
-
+\- python -m venv venv
 ```
 
+Activate it on Windows:
 
+```powershell
+.\venv\Scripts\Activate.ps1
+```
 
-Backend URL:
+Install the required dependencies:
 
+```bash
+\- pip install -r requirements.txt
+```
 
+\### 4. Start the Backend
+
+Open a terminal in the project root directory and run:
+
+```bash
+\- uvicorn backend.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+The backend API will be available at:
 
 http://127.0.0.1:8000
 
-
-
 API documentation:
-
-
 
 http://127.0.0.1:8000/docs
 
+\### 5. Start the Frontend
 
-
-\### Step 4: Start the Frontend
-
-
-
-Open another terminal:
-
-
+Open a second terminal and navigate to the frontend directory:
 
 ```bash
-
-cd frontend
-
-python -m http.server 5500
-
+\-cd frontend
 ```
 
+Start the local frontend server:
 
+```bash
+\- python -m http.server 5500
+```
 
 Open the dashboard in your browser:
 
-
-
 http://127.0.0.1:5500
 
+\### 6. Access the Application
+
+Make sure both the backend and frontend terminals remain running while using the dashboard.
+
+- Frontend: http://127.0.0.1:5500
+- Backend: http://127.0.0.1:8000
+- API documentation: http://127.0.0.1:8000/docs
 
 
-Keep both backend and frontend terminals running while using the dashboard.
 
 
 
@@ -365,8 +357,6 @@ Spatial and temporal matching identifies potential cross-platform relationships 
 \*\*Project Domain:\*\* Satellite Remote Sensing and Active Fire Analysis
 
 
-
-\*\*Challenge:\*\* NASA Space Apps Challenge
 
 
 
