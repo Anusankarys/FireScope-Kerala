@@ -1,0 +1,7 @@
+platform_1,platform_2,matched_pairs,mean_frp_1,mean_frp_2,mean_absolute_difference,median_absolute_difference,mean_percentage_difference,median_percentage_difference,mean_frp_ratio,correlation
+Aqua,N20,3,12.633,4.967,7.667,4.12,97.165,105.304,0.388,0.379
+Aqua,N21,2,28.5,8.305,20.195,20.195,110.583,110.583,0.289,1.0
+Aqua,SNPP,6,28.467,7.358,22.738,21.49,118.806,122.45,0.413,-0.472
+N20,N21,309,5.8,7.0,3.663,1.91,53.381,42.922,1.663,0.528
+N20,SNPP,439,5.44,5.798,3.139,1.36,47.686,39.572,1.302,0.407
+N21,SNPP,361,7.132,5.352,3.908,1.92,55.005,48.965,1.009,0.386

@@ -1,0 +1,10 @@
+platform,confidence,Matched,Unmatched,total_observations,matched_percentage,unmatched_percentage
+N20,h,16,20,36,44.44,55.56
+N20,l,42,79,121,34.71,65.29
+N20,n,548,710,1258,43.56,56.44
+N21,h,13,22,35,37.14,62.86
+N21,l,44,93,137,32.12,67.88
+N21,n,483,747,1230,39.27,60.73
+SNPP,h,17,18,35,48.57,51.43
+SNPP,l,67,54,121,55.37,44.63
+SNPP,n,610,574,1184,51.52,48.48

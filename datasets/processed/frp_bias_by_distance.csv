@@ -1,0 +1,10 @@
+platform_1,platform_2,distance_band,matched_pairs,mean_signed_difference,median_signed_difference,mean_absolute_difference,platform_1_higher_count,platform_2_higher_count,equal_count,platform_1_higher_percentage,platform_2_higher_percentage,equal_percentage
+N20,N21,0-100m,54,-0.569,-0.625,2.878,21,33,0,38.889,61.111,0.0
+N20,N21,100-250m,142,-1.722,-0.645,4.203,52,90,0,36.62,63.38,0.0
+N20,N21,250-500m,113,-0.844,-0.38,3.359,49,64,0,43.363,56.637,0.0
+N20,SNPP,0-100m,79,-0.29,0.36,2.362,49,30,0,62.025,37.975,0.0
+N20,SNPP,100-250m,236,-0.409,-0.235,3.416,107,127,2,45.339,53.814,0.847
+N20,SNPP,250-500m,124,-0.303,-0.23,3.105,55,69,0,44.355,55.645,0.0
+N21,SNPP,0-100m,57,1.078,0.78,3.127,37,20,0,64.912,35.088,0.0
+N21,SNPP,100-250m,196,2.491,1.01,4.621,126,70,0,64.286,35.714,0.0
+N21,SNPP,250-500m,108,0.863,0.585,3.026,59,49,0,54.63,45.37,0.0

@@ -1,0 +1,7 @@
+platform_1,platform_2,matched_pairs,mean_signed_difference,median_signed_difference,mean_absolute_difference,platform_1_higher_count,platform_2_higher_count,equal_count,platform_1_higher_percentage,platform_2_higher_percentage,equal_percentage
+Aqua,N20,3,7.667,4.12,7.667,3,0,0,100.0,0.0,0.0
+Aqua,N21,2,20.195,20.195,20.195,2,0,0,100.0,0.0,0.0
+Aqua,SNPP,6,21.108,21.49,22.738,5,1,0,83.333,16.667,0.0
+N20,N21,309,-1.199,-0.55,3.663,122,187,0,39.482,60.518,0.0
+N20,SNPP,439,-0.358,-0.07,3.139,211,226,2,48.064,51.481,0.456
+N21,SNPP,361,1.781,0.8,3.908,222,139,0,61.496,38.504,0.0

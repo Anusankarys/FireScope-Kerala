@@ -1,0 +1,13 @@
+platform_1,platform_2,time_band,matched_pairs,mean_absolute_difference,median_absolute_difference,mean_percentage_difference
+N20,N21,0-15 min,0,,,
+N20,N21,15-30 min,0,,,
+N20,N21,30-45 min,2,0.805,0.805,53.406
+N20,N21,45-60 min,307,3.681,1.94,53.381
+N20,SNPP,0-15 min,0,,,
+N20,SNPP,15-30 min,439,3.139,1.36,47.686
+N20,SNPP,30-45 min,0,,,
+N20,SNPP,45-60 min,0,,,
+N21,SNPP,0-15 min,0,,,
+N21,SNPP,15-30 min,253,3.09,1.61,52.606
+N21,SNPP,30-45 min,108,5.825,3.235,60.625
+N21,SNPP,45-60 min,0,,,

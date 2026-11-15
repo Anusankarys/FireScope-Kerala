@@ -1,0 +1,3 @@
+match_category,observation_count,mean_frp,median_frp,minimum_frp,maximum_frp,standard_deviation
+Matched,1849,6.155,4.46,0.16,95.0,6.592
+Unmatched,2512,6.126,4.36,0.23,132.6,7.237

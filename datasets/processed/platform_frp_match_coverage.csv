@@ -1,0 +1,10 @@
+platform,match_category,observation_count,mean_frp,median_frp,minimum_frp,maximum_frp,standard_deviation
+Aqua,Matched,9,23.189,17.0,5.9,47.3,14.013
+Aqua,Unmatched,131,16.558,12.3,3.0,132.6,16.36
+N20,Matched,606,5.637,4.245,0.36,66.88,5.945
+N20,Unmatched,809,5.253,3.84,0.3,81.39,6.217
+N21,Matched,540,7.207,5.27,0.42,95.0,7.65
+N21,Unmatched,862,5.975,4.54,0.26,74.02,5.681
+SNPP,Matched,694,5.568,4.08,0.16,72.0,5.66
+SNPP,Unmatched,646,4.772,3.87,0.23,94.07,5.095
+Terra,Unmatched,64,11.488,9.15,4.1,36.5,6.927

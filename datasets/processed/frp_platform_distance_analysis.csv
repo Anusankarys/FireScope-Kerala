@@ -1,0 +1,10 @@
+platform_1,platform_2,distance_band,matched_pairs,mean_absolute_difference,median_absolute_difference,mean_percentage_difference
+N20,N21,0-100m,54,2.878,1.815,51.114
+N20,N21,100-250m,142,4.203,1.88,53.54
+N20,N21,250-500m,113,3.359,2.11,54.264
+N20,SNPP,0-100m,79,2.362,1.45,39.392
+N20,SNPP,100-250m,236,3.416,1.435,49.341
+N20,SNPP,250-500m,124,3.105,1.19,49.821
+N21,SNPP,0-100m,57,3.127,1.73,53.568
+N21,SNPP,100-250m,196,4.621,2.29,60.348
+N21,SNPP,250-500m,108,3.026,1.55,46.068

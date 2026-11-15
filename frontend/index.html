@@ -1,0 +1,651 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireScope | Kerala Fire Monitoring</title>
+
+<link rel="stylesheet"
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1220;
+    color: #e8eef8;
+}
+
+header {
+    padding: 20px 30px;
+    background: #111c30;
+    border-bottom: 1px solid #263750;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 { margin: 0; color: #ff7043; }
+header p { margin: 5px 0 0; color: #9aabc3; }
+
+.status {
+    color: #54d69a;
+    font-size: 13px;
+}
+
+.container { padding: 24px; }
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.card, .panel {
+    background: #142137;
+    border: 1px solid #263750;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.card p { color: #9aabc3; margin: 0 0 12px; }
+.card h2 { margin: 0; font-size: 28px; }
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+    align-items: center;
+}
+
+select, button {
+    padding: 11px 15px;
+    border-radius: 7px;
+    border: 1px solid #344963;
+    background: #142137;
+    color: white;
+    font-size: 14px;
+}
+
+button {
+    background: #e65f36;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover { background: #ff784b; }
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+}
+
+.panel h3 { margin-top: 0; }
+
+#map {
+    height: 530px;
+    width: 100%;
+    border-radius: 9px;
+}
+
+.chart-box { height: 260px; }
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+    font-size: 12px;
+    color: #b9c8db;
+}
+
+.legend span { display: flex; align-items: center; gap: 5px; }
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.info { color: #9aabc3; font-size: 13px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th, td {
+    text-align: left;
+    padding: 11px 8px;
+    border-bottom: 1px solid #263750;
+}
+
+th { color: #ff9979; }
+.table-panel { margin-top: 20px; overflow-x: auto; }
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #8192aa;
+    font-size: 12px;
+}
+
+@media(max-width: 850px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .main-grid { grid-template-columns: 1fr; }
+    #map { height: 430px; }
+}
+
+@media(max-width: 480px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+    .container { padding: 12px; }
+    header { padding: 16px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>🔥 FireScope</h1>
+        <p>Multi-Satellite Fire Detection & Harmonization | Kerala, India</p>
+    </div>
+    <div class="status" id="connection">● Connecting...</div>
+</header>
+
+<div class="container">
+
+    <section class="cards">
+        <div class="card">
+            <p>Total Detections</p>
+            <h2 id="total">--</h2>
+        </div>
+        <div class="card">
+            <p>Matched Detections</p>
+            <h2 id="matched">--</h2>
+        </div>
+        <div class="card">
+            <p>Unmatched Detections</p>
+            <h2 id="unmatched">--</h2>
+        </div>
+        <div class="card">
+            <p>Average FRP (MW)</p>
+            <h2 id="frp">--</h2>
+        </div>
+    </section>
+
+    <section class="filters">
+        <select id="platformFilter">
+            <option value="All">All Platforms</option>
+            <option value="N20">NOAA-20</option>
+            <option value="N21">NOAA-21</option>
+            <option value="SNPP">Suomi-NPP</option>
+            <option value="Aqua">Aqua</option>
+            <option value="Terra">Terra</option>
+        </select>
+
+        <select id="statusFilter">
+            <option value="All">All Match Status</option>
+            <option value="matched">Matched</option>
+            <option value="unmatched">Unmatched</option>
+        </select>
+
+        <button onclick="loadDashboard()">Apply Filters</button>
+        <button onclick="resetFilters()">Reset</button>
+        <button onclick="exportCSV()">⬇ Export CSV</button>
+    </section>
+
+    <section class="main-grid">
+        <div class="panel">
+            <h3>Kerala Active Fire Hotspots</h3>
+            <div id="map"></div>
+            <div class="legend">
+                <span><i class="dot" style="background:#ff5252"></i>N20</span>
+                <span><i class="dot" style="background:#ffb74d"></i>N21</span>
+                <span><i class="dot" style="background:#4fc3f7"></i>SNPP</span>
+                <span><i class="dot" style="background:#ba68c8"></i>Aqua</span>
+                <span><i class="dot" style="background:#81c784"></i>Terra</span>
+            </div>
+            <p class="info">Select a hotspot to view its platform, FRP, timestamp and match status.</p>
+        </div>
+
+        <div class="panel">
+            <h3>Platform Distribution</h3>
+            <div class="chart-box">
+                <canvas id="platformChart"></canvas>
+            </div>
+            <hr style="border-color:#263750; margin:25px 0">
+            <h3>Dataset Information</h3>
+            <p class="info">Location: Kerala, India</p>
+            <p class="info">Data period: <span id="dateRange">--</span></p>
+            <p class="info">Sensor families: MODIS and VIIRS</p>
+            <p class="info">Matching method: Mutual nearest neighbour</p>
+            <p class="info">Exploratory matching threshold: 500 metres / 60 minutes</p>
+            <p class="info" id="visibleCount">Loading detections...</p>
+        </div>
+    </section>
+    
+    <!-- FIRE ACTIVITY ANALYTICS -->
+
+    <section class="main-grid" style="margin-top:20px;">
+
+        <div class="panel">
+            <h3>Daily Fire Detection Activity</h3>
+            <div class="chart-box">
+                <canvas id="dailyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Day vs Night Detection Distribution</h3>
+            <div class="chart-box">
+                <canvas id="dayNightChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="panel" style="margin-top:20px;">
+        <h3>Monthly Fire Detection Trends</h3>
+        <div style="height:320px;">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </section>
+
+    <section class="panel table-panel">
+        <h3>Recent Satellite Detections</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>FRP (MW)</th>
+                    <th>Date & Time (UTC)</th>
+                    <th>Day/Night</th>
+                    <th>Match Status</th>
+                </tr>
+            </thead>
+            <tbody id="detectionTable">
+                <tr><td colspan="5">Loading...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+</div>
+
+<footer>
+    FireScope | Satellite-Based Fire Detection and Data Harmonization
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+const colors = {
+    N20: "#ff5252",
+    N21: "#ffb74d",
+    SNPP: "#4fc3f7",
+    Aqua: "#ba68c8",
+    Terra: "#81c784"
+};
+
+const map = L.map("map").setView([10.3, 76.3], 7);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 18
+}).addTo(map);
+
+let markerLayer = L.layerGroup().addTo(map);
+let chart = null;
+
+async function loadDashboard() {
+    try {
+        document.getElementById("connection").textContent =
+            "● Loading data...";
+
+        const [summaryResponse, detectionResponse] =
+            await Promise.all([
+                fetch(`${API}/api/summary`),
+                fetch(
+                    `${API}/api/detections?platform=${
+                        document.getElementById("platformFilter").value
+                    }&status=${
+                        document.getElementById("statusFilter").value
+                    }&limit=5000`
+                )
+            ]);
+
+        if (!summaryResponse.ok || !detectionResponse.ok) {
+            throw new Error("API request failed");
+        }
+
+        const summary = await summaryResponse.json();
+        const data = await detectionResponse.json();
+
+        document.getElementById("connection").textContent =
+            "● API Connected";
+
+        document.getElementById("total").textContent =
+            summary.total_detections.toLocaleString();
+
+        document.getElementById("matched").textContent =
+            summary.matched_detections.toLocaleString();
+
+        document.getElementById("unmatched").textContent =
+            summary.unmatched_detections.toLocaleString();
+
+        document.getElementById("frp").textContent =
+            summary.average_frp;
+
+        document.getElementById("dateRange").textContent =
+            `${summary.first_date} to ${summary.last_date}`;
+
+        document.getElementById("visibleCount").textContent =
+            `Showing ${data.count} filtered detections`;
+
+        updateChart(summary.platforms);
+        updateMap(data.detections);
+        updateTable(data.detections);
+
+    } catch (error) {
+        document.getElementById("connection").textContent =
+            "● API Connection Failed";
+
+        console.error(error);
+        alert("Cannot load FireScope data. Check that the backend is running.");
+    }
+}
+
+function updateChart(platforms) {
+    const labels = Object.keys(platforms);
+    const values = Object.values(platforms);
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(
+        document.getElementById("platformChart"),
+        {
+            type: "doughnut",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: labels.map(
+                        label => colors[label] || "#999"
+                    ),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: { color: "#e8eef8" }
+                    }
+                }
+            }
+        }
+    );
+}
+
+function updateMap(detections) {
+    markerLayer.clearLayers();
+
+    detections.forEach(item => {
+        const color = colors[item.platform] || "#ffffff";
+
+        const marker = L.circleMarker(
+            [item.latitude, item.longitude],
+            {
+                radius: 5,
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.8,
+                weight: 1
+            }
+        );
+
+        marker.bindPopup(`
+            <b>Platform:</b> ${item.platform}<br>
+            <b>Sensor:</b> ${item.sensor_family}<br>
+            <b>FRP:</b> ${item.frp} MW<br>
+            <b>Date:</b> ${item.acq_datetime_utc}<br>
+            <b>Day/Night:</b> ${item.daynight}<br>
+            <b>Status:</b> ${item.match_status}
+        `);
+
+        marker.addTo(markerLayer);
+    });
+}
+
+function updateTable(detections) {
+    const body = document.getElementById("detectionTable");
+
+    body.innerHTML = "";
+
+    detections.slice(0, 12).forEach(item => {
+        const row = document.createElement("tr");
+
+        [
+            item.platform,
+            Number(item.frp).toFixed(2),
+            item.acq_datetime_utc,
+            item.daynight,
+            item.match_status
+        ].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value ?? "N/A";
+            row.appendChild(cell);
+        });
+
+        body.appendChild(row);
+    });
+
+    if (detections.length === 0) {
+        body.innerHTML =
+            '<tr><td colspan="5">No detections found.</td></tr>';
+    }
+}
+
+function resetFilters() {
+    document.getElementById("platformFilter").value = "All";
+    document.getElementById("statusFilter").value = "All";
+    loadDashboard();
+}
+
+async function exportCSV() {
+    try {
+        const platform =
+            document.getElementById("platformFilter").value;
+
+        const status =
+            document.getElementById("statusFilter").value;
+
+        const url =
+            `${API}/api/export?platform=${encodeURIComponent(platform)}&status=${encodeURIComponent(status)}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("CSV export failed");
+        }
+
+        const blob = await response.blob();
+
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = "firescope_detections.csv";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.URL.revokeObjectURL(downloadUrl);
+
+    } catch (error) {
+        console.error("Export error:", error);
+        alert("Unable to export CSV. Please check the backend.");
+    }
+}
+
+
+
+// ===================================
+// FIRE ACTIVITY ANALYTICS
+// ===================================
+
+let dailyChart = null;
+let monthlyChart = null;
+let dayNightChart = null;
+
+async function loadActivityCharts() {
+    try {
+        const response = await fetch(`${API}/api/activity`);
+
+        if (!response.ok) {
+            throw new Error("Activity API request failed");
+        }
+
+        const activity = await response.json();
+
+        // DAILY DETECTION CHART
+        if (dailyChart) dailyChart.destroy();
+
+        dailyChart = new Chart(
+            document.getElementById("dailyChart"),
+            {
+                type: "line",
+                data: {
+                    labels: activity.daily.map(x => x.date),
+                    datasets: [{
+                        label: "Daily Detections",
+                        data: activity.daily.map(x => x.detections),
+                        borderColor: "#ff7043",
+                        backgroundColor: "rgba(255,112,67,0.15)",
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: "#e8eef8" }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: "#9aabc3",
+                                maxTicksLimit: 8
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: "#9aabc3" }
+                        }
+                    }
+                }
+            }
+        );
+
+        // MONTHLY DETECTION CHART
+        if (monthlyChart) monthlyChart.destroy();
+
+        monthlyChart = new Chart(
+            document.getElementById("monthlyChart"),
+            {
+                type: "bar",
+                data: {
+                    labels: activity.monthly.map(x => x.month),
+                    datasets: [{
+                        label: "Monthly Detections",
+                        data: activity.monthly.map(x => x.detections),
+                        backgroundColor: "#ff7043",
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: "#e8eef8" }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: "#9aabc3" }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: "#9aabc3" }
+                        }
+                    }
+                }
+            }
+        );
+
+        // DAY AND NIGHT CHART
+        if (dayNightChart) dayNightChart.destroy();
+
+        dayNightChart = new Chart(
+            document.getElementById("dayNightChart"),
+            {
+                type: "doughnut",
+                data: {
+                    labels: ["Daytime", "Nighttime"],
+                    datasets: [{
+                        data: [
+                            activity.daynight.D || 0,
+                            activity.daynight.N || 0
+                        ],
+                        backgroundColor: [
+                            "#ffb74d",
+                            "#60a5fa"
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: { color: "#e8eef8" }
+                        }
+                    }
+                }
+            }
+        );
+
+    } catch (error) {
+        console.error("Activity charts error:", error);
+    }
+}
+
+
+
+loadDashboard();
+loadActivityCharts();
+</script>
+
+</body>
+</html>

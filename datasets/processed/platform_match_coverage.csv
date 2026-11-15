@@ -1,0 +1,6 @@
+platform,total_observations,matched_observations,unmatched_observations,matched_percentage,unmatched_percentage
+Aqua,140,9,131,6.43,93.57
+N20,1415,606,809,42.83,57.17
+N21,1402,540,862,38.52,61.48
+SNPP,1340,694,646,51.79,48.21
+Terra,64,0,64,0.0,100.0

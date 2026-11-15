@@ -1,0 +1,6 @@
+frp_band,Matched,Unmatched,total_observations,matched_percentage,unmatched_percentage
+0-1,154,203,357,43.14,56.86
+>1-5,859,1224,2083,41.24,58.76
+>5-10,557,734,1291,43.14,56.86
+>10-20,220,269,489,44.99,55.01
+>20,59,82,141,41.84,58.16
